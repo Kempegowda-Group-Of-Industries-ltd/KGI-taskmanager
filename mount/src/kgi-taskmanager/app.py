@@ -3,6 +3,7 @@ from local_calendar import add_event_to_calendar, view_calendar, delete_event
 import pandas as pd
 from datetime import datetime
 
+
 # Function to inject custom CSS into the Streamlit app
 def add_custom_css():
     st.markdown("""
