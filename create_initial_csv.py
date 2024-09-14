@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+
 # Define the directory and file path
 directory = "data"
 file_path = os.path.join(directory, "tasks.csv")
