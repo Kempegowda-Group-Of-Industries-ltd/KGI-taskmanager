@@ -33,4 +33,3 @@ elif selection == "View Tasks":
 elif selection == "Manage Goals":
     st.title("Goal Management")
     task_manager.manage_goals()
-
