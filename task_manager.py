@@ -1,41 +1,38 @@
-import streamlit as st
 import pandas as pd
-from utils import save_task, load_tasks, delete_task
-from datetime import datetime
 
-class TaskManager:
-    def __init__(self):
-        self.tasks = load_tasks()
+TASKS_FILE = 'data/tasks.csv'
 
-    def add_task(self):
-        task_name = st.text_input("Task Name")
-        task_priority = st.selectbox("Priority", ["High", "Medium", "Low"])
-        task_due = st.date_input("Due Date")
-        task_category = st.text_input("Category", "Work")
+def load_tasks():
+    return pd.read_csv(TASKS_FILE)
 
-        if st.button("Add Task"):
-            task_data = {"Name": task_name, "Priority": task_priority, "Due": task_due, "Category": task_category}
-            save_task(task_data)
-            st.success("Task added successfully!")
+def save_task(task_data):
+    tasks = load_tasks()
+    tasks = tasks.append(task_data, ignore_index=True)
+    tasks.to_csv(TASKS_FILE, index=False)
 
-    def view_tasks(self):
-        tasks = self.tasks
-        if not tasks.empty:
-            st.dataframe(tasks)
-            selected_task = st.selectbox("Select Task to Edit or Delete", tasks["Name"].values)
-            if st.button("Delete Task"):
-                delete_task(selected_task)
-                st.success("Task deleted successfully!")
-        else:
-            st.warning("No tasks found.")
+def add_task(name, priority, due, category):
+    task_data = {
+        "Name": name,
+        "Priority": priority,
+        "Due": due,
+        "Category": category
+    }
+    save_task(task_data)
 
-    def manage_goals(self):
-        st.write("Goal management will be added soon!")
+def view_tasks():
+    return load_tasks()
 
-    def show_dashboard(self):
-        task_df = self.tasks
-        if not task_df.empty:
-            task_count = task_df.shape[0]
-            st.metric("Total Tasks", task_count)
-        else:
-            st.info("No tasks to display.")
+def update_task(name, priority=None, due=None, category=None):
+    tasks = load_tasks()
+    if priority is not None:
+        tasks.loc[tasks['Name'] == name, 'Priority'] = priority
+    if due is not None:
+        tasks.loc[tasks['Name'] == name, 'Due'] = due
+    if category is not None:
+        tasks.loc[tasks['Name'] == name, 'Category'] = category
+    tasks.to_csv(TASKS_FILE, index=False)
+
+def delete_task(name):
+    tasks = load_tasks()
+    tasks = tasks[tasks['Name'] != name]
+    tasks.to_csv(TASKS_FILE, index=False)
