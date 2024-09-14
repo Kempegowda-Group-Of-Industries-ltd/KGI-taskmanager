@@ -1,59 +1,93 @@
 import streamlit as st
-from local_calendar import add_event_to_calendar, view_calendar
-from task_manager import add_task, view_tasks, delete_task, update_task
+from local_calendar import add_event_to_calendar, view_calendar, delete_event
+import pandas as pd
+from datetime import datetime
 
+# Function to inject custom CSS into the Streamlit app
+def add_custom_css():
+    st.markdown("""
+        <style>
+            /* Styling for the KGI Task Manager */
+            body {
+                font-family: 'Roboto', sans-serif;
+            }
+
+            h1, h2, h3 {
+                color: #004aad;
+            }
+
+            .stButton>button {
+                background-color: #004aad;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+            }
+
+            .stButton>button:hover {
+                background-color: #003a8c;
+            }
+
+            .stTextInput input, .stDateInput input {
+                border: 2px solid #004aad;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+# Set up the Streamlit app layout
 def main():
-    st.title("Task and Goal Management App")
+    # Inject custom CSS
+    add_custom_css()
 
-    # Sidebar for selecting task/goal operations
-    menu = ["Add Task", "View Tasks", "Delete Task", "Update Task", "View Calendar"]
-    choice = st.sidebar.selectbox("Select an Operation", menu)
+    st.set_page_config(page_title="Local Calendar", layout="wide")
+    st.title("📅 Local Calendar System")
 
-    # Add Task
-    if choice == "Add Task":
-        st.subheader("Add New Task")
-        task_name = st.text_input("Task Name")
-        task_priority = st.selectbox("Priority", ["Low", "Medium", "High"])
-        task_due = st.date_input("Due Date")
-        task_category = st.text_input("Category")
-        
-        if st.button("Add Task"):
-            add_task(task_name, task_priority, task_due, task_category)
-            add_event_to_calendar(task_name, task_due)  # Add to local calendar
-            st.success("Task added successfully!")
+    # Sidebar Menu
+    menu = ["Add Event", "View Calendar", "Delete Event"]
+    choice = st.sidebar.selectbox("Menu", menu)
 
-    # View Tasks
-    elif choice == "View Tasks":
-        st.subheader("View All Tasks")
-        tasks = view_tasks()
-        st.write(tasks)
+    # 1. Add Event Section
+    if choice == "Add Event":
+        st.subheader("Add New Event")
+        task_name = st.text_input("Event Name")
+        start_date = st.date_input("Start Date", datetime.now())
+        start_time = st.time_input("Start Time", datetime.now().time())
+        duration_hours = st.number_input("Duration (hours)", min_value=1, max_value=12, value=1)
 
-    # Delete Task
-    elif choice == "Delete Task":
-        st.subheader("Delete a Task")
-        task_name = st.text_input("Task Name to Delete")
-        
-        if st.button("Delete Task"):
-            delete_task(task_name)
-            st.success("Task deleted successfully!")
+        # Combine date and time for the event start
+        start_datetime = datetime.combine(start_date, start_time)
 
-    # Update Task
-    elif choice == "Update Task":
-        st.subheader("Update a Task")
-        task_name = st.text_input("Task Name to Update")
-        task_priority = st.selectbox("New Priority", ["Low", "Medium", "High"], index=0)
-        task_due = st.date_input("New Due Date")
-        task_category = st.text_input("New Category")
-        
-        if st.button("Update Task"):
-            update_task(task_name, task_priority, task_due, task_category)
-            st.success("Task updated successfully!")
+        if st.button("Add Event"):
+            new_event = add_event_to_calendar(task_name, start_datetime, duration_hours)
+            st.success(f"Event '{task_name}' added successfully!")
+            st.write(new_event)
 
-    # View Calendar
+    # 2. View Calendar Section
     elif choice == "View Calendar":
-        st.subheader("View Calendar Events")
+        st.subheader("All Calendar Events")
         events = view_calendar()
-        st.write(events)
 
+        if not events.empty:
+            st.dataframe(events)
+        else:
+            st.info("No events found. Please add some events.")
+
+    # 3. Delete Event Section
+    elif choice == "Delete Event":
+        st.subheader("Delete an Event")
+        events = view_calendar()
+
+        if not events.empty:
+            task_name = st.selectbox("Select Event to Delete", events["Task"].unique())
+            if st.button("Delete Event"):
+                updated_events = delete_event(task_name)
+                st.success(f"Event '{task_name}' deleted successfully!")
+                st.write(updated_events)
+        else:
+            st.info("No events available to delete.")
+
+# Run the app
 if __name__ == "__main__":
     main()
