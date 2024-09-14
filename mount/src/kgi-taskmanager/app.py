@@ -3,7 +3,6 @@ from local_calendar import add_event_to_calendar, view_calendar, delete_event
 import pandas as pd
 from datetime import datetime
 
-
 # Function to inject custom CSS into the Streamlit app
 def add_custom_css():
     st.markdown("""
@@ -39,10 +38,12 @@ def add_custom_css():
 
 # Set up the Streamlit app layout
 def main():
+    # Set the page config at the start
+    st.set_page_config(page_title="Local Calendar", layout="wide")
+    
     # Inject custom CSS
     add_custom_css()
 
-    st.set_page_config(page_title="Local Calendar", layout="wide")
     st.title("📅 Local Calendar System")
 
     # Sidebar Menu
