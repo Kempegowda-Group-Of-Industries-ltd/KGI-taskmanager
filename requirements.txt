@@ -1,10 +1,10 @@
 streamlit
 pandas
+numpy
 firebase-admin
 pyfcm
 python-dateutil
 pytz
-numpy
 opencv-python
 tensorflow
 keras
