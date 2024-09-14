@@ -74,4 +74,7 @@ def main():
         goal_name = st.text_input("Goal Name to Delete")
         if st.button("Delete Goal"):
             delete_goal(goal_name)
-            st.success("
+            st.success("Goal deleted successfully!")
+
+if __name__ == "__main__":
+    main()
