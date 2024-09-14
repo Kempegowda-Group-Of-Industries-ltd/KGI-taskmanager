@@ -1,0 +1,9 @@
+# Ignore the credentials file
+config/credentials.json
+
+# Ignore the entire config directory (if desired)
+config/
+
+# Ignore Python bytecode and other common files
+*.pyc
+__pycache__/
