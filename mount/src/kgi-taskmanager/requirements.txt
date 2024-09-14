@@ -9,6 +9,3 @@ opencv-python
 tensorflow
 keras
 mediapipe
-google-api-python-client==2.91.0
-google-auth==2.23.4
-
