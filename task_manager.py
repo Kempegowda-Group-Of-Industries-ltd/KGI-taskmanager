@@ -22,14 +22,9 @@ def add_task(name, priority, due, category):
 def view_tasks():
     return load_tasks()
 
-def update_task(name, priority=None, due=None, category=None):
+def update_task(name, priority, due, category):
     tasks = load_tasks()
-    if priority is not None:
-        tasks.loc[tasks['Name'] == name, 'Priority'] = priority
-    if due is not None:
-        tasks.loc[tasks['Name'] == name, 'Due'] = due
-    if category is not None:
-        tasks.loc[tasks['Name'] == name, 'Category'] = category
+    tasks.loc[tasks['Name'] == name, ['Priority', 'Due', 'Category']] = priority, due, category
     tasks.to_csv(TASKS_FILE, index=False)
 
 def delete_task(name):
