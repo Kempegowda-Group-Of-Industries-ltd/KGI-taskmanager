@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 
 # Define the scopes and service account file path
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-SERVICE_ACCOUNT_FILE = 'config/credentials.json'  # Update this path as needed
+#SERVICE_ACCOUNT_FILE = 'config/credentials.json'  # Update this path as needed
+SERVICE_ACCOUNT_FILE = 'mount/src/kgi-taskmanager/config/credentials.json'
 
 # Authenticate and create the Google Calendar service
 credentials = service_account.Credentials.from_service_account_file(
