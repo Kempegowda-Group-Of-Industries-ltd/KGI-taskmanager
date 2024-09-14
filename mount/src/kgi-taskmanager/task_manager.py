@@ -1,41 +1,32 @@
-import os
 import pandas as pd
+import os
 
-# Define the directory and file path
+# Directory and file path
 TASKS_DIRECTORY = "/mount/src/kgi-taskmanager/data"
 TASKS_FILE = os.path.join(TASKS_DIRECTORY, "tasks.csv")
 
-# Function to ensure the tasks.csv file is created with the required headers
+# Ensure the CSV file exists
 def initialize_task_file():
-    # Create the 'data' directory if it doesn't exist
     if not os.path.exists(TASKS_DIRECTORY):
         os.makedirs(TASKS_DIRECTORY)
-
-    # Check if the tasks.csv file exists, if not, create it
     if not os.path.exists(TASKS_FILE):
-        # Define the columns
         columns = ["Name", "Priority", "Due", "Category"]
-        
-        # Create an empty DataFrame with the required columns
         df = pd.DataFrame(columns=columns)
-        
-        # Save the empty DataFrame to CSV
         df.to_csv(TASKS_FILE, index=False)
         print(f"{TASKS_FILE} created successfully with headers: {columns}")
     else:
         print(f"{TASKS_FILE} already exists.")
 
-# Call the initialize_task_file() when the script is loaded
 initialize_task_file()
 
-# Load tasks from the CSV file
+# Load tasks from CSV
 def load_tasks():
     try:
         return pd.read_csv(TASKS_FILE)
     except FileNotFoundError:
         return pd.DataFrame(columns=["Name", "Priority", "Due", "Category"])
 
-# Save a new or updated task to the CSV file
+# Save a new task to CSV
 def save_task(task_data):
     tasks = load_tasks()
     new_task = pd.DataFrame([task_data])
@@ -70,5 +61,5 @@ def update_task(name, priority=None, due=None, category=None):
 # Delete a task from the task manager
 def delete_task(name):
     tasks = load_tasks()
-    tasks = tasks[tasks['Name'] != name]
+    tasks = tasks[tasks["Name"] != name]
     tasks.to_csv(TASKS_FILE, index=False)
