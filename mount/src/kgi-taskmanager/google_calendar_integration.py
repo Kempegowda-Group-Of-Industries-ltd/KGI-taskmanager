@@ -1,17 +1,22 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta
+import os
 
-
-# Define the scopes and service account file path
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-#SERVICE_ACCOUNT_FILE = 'config/credentials.json'  # Update this path as needed
-SERVICE_ACCOUNT_FILE = 'mount/src/kgi-taskmanager/config/credentials.json'
+SERVICE_ACCOUNT_FILE = 'mount/src/kgi-taskmanager/config/credentials.json'  # Update path as needed
 
-# Authenticate and create the Google Calendar service
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-service = build('calendar', 'v3', credentials=credentials)
+# Check if the credentials file exists
+if not os.path.exists(SERVICE_ACCOUNT_FILE):
+    raise FileNotFoundError(f"Service account file not found at {SERVICE_ACCOUNT_FILE}. Please check the path.")
+
+try:
+    # Authenticate and create the Google Calendar service
+    credentials = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('calendar', 'v3', credentials=credentials)
+except Exception as e:
+    raise Exception(f"Error initializing Google Calendar API: {e}")
 
 def add_event_to_calendar(task_name, due_date):
     event = {
