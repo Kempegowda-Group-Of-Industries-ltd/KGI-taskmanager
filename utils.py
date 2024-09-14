@@ -10,7 +10,8 @@ def load_tasks():
 # Save a new task to CSV
 def save_task(task_data):
     tasks = load_tasks()
-    tasks = tasks.append(task_data, ignore_index=True)
+    new_task = pd.DataFrame([task_data])  # Create a new DataFrame for the task
+    tasks = pd.concat([tasks, new_task], ignore_index=True)  # Use pd.concat instead of append
     tasks.to_csv("data/tasks.csv", index=False)
 
 # Delete a task from the CSV file
