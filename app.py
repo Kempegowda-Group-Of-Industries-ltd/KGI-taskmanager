@@ -1,14 +1,12 @@
 import streamlit as st
 from task_manager import add_task, view_tasks, update_task, delete_task
-from goal_manager import add_goal, view_goals, update_goal, delete_goal
 
 def main():
-    st.title("KGI - Task and Goal Management")
+    st.title("KGI - Task Management")
 
     selection = st.sidebar.selectbox(
         "Select Option",
-        ["Add Task", "View Tasks", "Edit Task", "Delete Task",
-         "Add Goal", "View Goals", "Update Goal", "Delete Goal"]
+        ["Add Task", "View Tasks", "Edit Task", "Delete Task"]
     )
 
     if selection == "Add Task":
@@ -33,7 +31,6 @@ def main():
         task_due = st.date_input("New Due Date (Optional)", value=None)
         task_category = st.text_input("New Category (Optional)", value="")
         if st.button("Update Task"):
-            # Call update_task with parameters only if they are provided
             update_task(task_name, 
                          priority=task_priority if task_priority else None, 
                          due=task_due if task_due else None,
@@ -46,37 +43,6 @@ def main():
         if st.button("Delete Task"):
             delete_task(task_name)
             st.success("Task deleted successfully!")
-
-    elif selection == "Add Goal":
-        st.title("Add New Goal")
-        goal_name = st.text_input("Goal Name")
-        goal_priority = st.selectbox("Priority", ["Low", "Medium", "High"])
-        goal_due = st.date_input("Due Date")
-        goal_category = st.text_input("Category")
-        goal_progress = st.slider("Progress", 0, 100, 0)
-        if st.button("Add Goal"):
-            add_goal(goal_name, goal_priority, goal_due, goal_category, goal_progress)
-            st.success("Goal added successfully!")
-
-    elif selection == "View Goals":
-        st.title("Your Goals")
-        goals = view_goals()
-        st.write(goals)
-
-    elif selection == "Update Goal":
-        st.title("Update Goal")
-        goal_name = st.text_input("Goal Name to Update")
-        goal_progress = st.slider("New Progress", 0, 100, 0)
-        if st.button("Update Goal"):
-            update_goal(goal_name, goal_progress)
-            st.success("Goal updated successfully!")
-
-    elif selection == "Delete Goal":
-        st.title("Delete Goal")
-        goal_name = st.text_input("Goal Name to Delete")
-        if st.button("Delete Goal"):
-            delete_goal(goal_name)
-            st.success("Goal deleted successfully!")
 
 if __name__ == "__main__":
     main()
